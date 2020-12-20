@@ -15,8 +15,15 @@ $("app-manage-items").replaceWith('<div id="manage-items">' + manageItems + '</d
 var html = '<style>' + style + '</style>';
 $("#dashboard").append(html);
 
+let dataTable:any =null;
+
 async function loadAllItems():Promise<void> {
     let items = await getAllItems();
+
+    if(dataTable){
+        ($("#tbl-items")as any).DataTable().destroy();
+        $("#tbl-items tbody tr").remove();
+    }
     for (const item of items) {
         $("#tbl-items tbody").append(`<tr>
         <td>${item.id}</td>
@@ -26,12 +33,14 @@ async function loadAllItems():Promise<void> {
         <td><i class="fas fa-trash"></i></td>
         </tr>`);
     }
-    ($("#tbl-items") as any).DataTable({
+    dataTable = ($("#tbl-items") as any).DataTable({
         "info": false,
         "searching": false,
         "lengthChange": false,
         "pageLength": 5,
+        "ordering": false
     });
+    dataTable.page(Math.ceil(items.length / 5)-1).draw(false);
 };
 loadAllItems();
 
