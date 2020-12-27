@@ -39,3 +39,16 @@ export function saveItem(item:Item):Promise<void>{
         });
     });
 }
+export function deleteItem(id:string):Promise<void>{
+    return new Promise((resolve,reject)=>{
+        $.ajax({
+            method: "DELETE",
+            url: `http://localhost:8080/app/items?id=${id}`,
+        }).then(()=>{
+            items.splice(items.findIndex((elm)=>{elm.id===id}),1);
+            resolve();
+        }).fail(()=>{
+            reject();
+        });
+    });
+}

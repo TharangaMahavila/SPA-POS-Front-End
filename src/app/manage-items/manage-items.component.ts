@@ -9,7 +9,7 @@ import '../../../node_modules/admin-lte/plugins/datatables/jquery.dataTables.min
 import '../../../node_modules/admin-lte/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js';
 import '../../../node_modules/admin-lte/plugins/datatables-responsive/js/dataTables.responsive.min.js';
 import '../../../node_modules/admin-lte/plugins/datatables-responsive/js/responsive.bootstrap4.min.js';
-import { getAllItems, saveItem } from '../service/item.service';
+import { deleteItem, getAllItems, saveItem } from '../service/item.service';
 import { Item } from '../model/item';
 import swal from 'sweetalert';
 
@@ -86,7 +86,7 @@ export function clearTextFields(){
 $("#btnItemClear").on('click',function(){
     clearTextFields();
 });
-$("tbl-items tbody").on('click','tr i', (e)=>{
+$("#tbl-items tbody").on('click','tr i', (e)=>{
     swal({
         title: "Are you sure?",
         text: "Once deleted, you will not be able to recover this Item!",
@@ -98,8 +98,23 @@ $("tbl-items tbody").on('click','tr i', (e)=>{
         if(willDelete){
             let id=$(e.target).closest("tr").find("td").first().html();
             try{
-                
+                await deleteItem(id);
+                swal({
+                    title: "Item Deleted!",
+                    text: "Successfully Deleted the Item",
+                    icon: "success",
+                });
+                loadAllItems();
+            }catch{
+                swal({
+                    title: "Oops! Something went wrong",
+                    text: "Failed to delete the Item",
+                    icon: "error",
+                });
             }
+            clearTextFields();
+        }else{
+            clearTextFields();
         }
     });
 
