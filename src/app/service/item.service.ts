@@ -52,3 +52,18 @@ export function deleteItem(id:string):Promise<void>{
         });
     });
 }
+export function updateItem(item:Item):Promise<void>{
+    return new Promise((resolve,reject)=>{
+        $.ajax({
+            method:"PUT",
+            url:`http://localhost:8080/app/items?id=${item.id}`,
+            contentType: "application/json",
+            data: JSON.stringify(item)
+        }).then(()=>{
+            items.splice(items.findIndex((elm)=>{elm.id===item.id}),1,item);
+            resolve();
+        }).fail(()=>{
+            reject();
+        });
+    });
+};

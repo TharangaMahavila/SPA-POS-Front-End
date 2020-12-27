@@ -9,7 +9,7 @@ import '../../../node_modules/admin-lte/plugins/datatables/jquery.dataTables.min
 import '../../../node_modules/admin-lte/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js';
 import '../../../node_modules/admin-lte/plugins/datatables-responsive/js/dataTables.responsive.min.js';
 import '../../../node_modules/admin-lte/plugins/datatables-responsive/js/responsive.bootstrap4.min.js';
-import { deleteItem, getAllItems, saveItem } from '../service/item.service';
+import { deleteItem, getAllItems, saveItem, updateItem } from '../service/item.service';
 import { Item } from '../model/item';
 import swal from 'sweetalert';
 
@@ -71,7 +71,22 @@ $("#btnItemSave").on('click',async()=>{
             });
         }
     }else{
-
+        try{
+            await updateItem(new Item(id,name,qty,price));
+            swal({
+                title:"Item Updated!",
+                text: "Successfully Updated the Item",
+                icon: "success",
+            });
+            loadAllItems();
+            clearTextFields();
+        }catch{
+            swal({
+                title: "Oops! Something went wrong",
+                text: "Failed to Update the Item",
+                icon: "error",
+            });
+        }
     }
 });
 export function clearTextFields(){
@@ -118,6 +133,14 @@ $("#tbl-items tbody").on('click','tr i', (e)=>{
         }
     });
 
+});
+$("#tbl-items tbody").on('click','tr',function(e){
+    $("#txtItemId").val($(e.target).closest('tr').find('td').first().html());
+    $("#txtItemName").val($(e.target).closest('tr').find('td').eq(1).html());
+    $("#txtItemQty").val($(e.target).closest('tr').find('td').eq(2).html());
+    $("#txtItemPrice").val($(e.target).closest('tr').find('td').eq(3).html());
+    $("#txtItemId").prop('disabled', true);
+    editItem = true;
 });
 
 
