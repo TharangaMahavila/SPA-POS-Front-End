@@ -1,3 +1,4 @@
+import { resolve } from "../../../webpack.config";
 import { Item } from "../model/item";
 
 let items:Array<Item>=[];
@@ -21,5 +22,20 @@ export function getAllItems():Promise<Array<Item>> {
            resolve(items);
        }
 
+    });
+}
+export function saveItem(item:Item):Promise<void>{
+    return new Promise((resolve,reject)=>{
+        $.ajax({
+            method: "POST",
+            url: "http://localhost:8080/app/items",
+            contentType: "application/json",
+            data: JSON.stringify(item)
+        }).then(()=>{
+            items.push(item);
+            resolve();
+        }).fail(()=>{
+            reject();
+        });
     });
 }

@@ -103,9 +103,9 @@ $("#btnSave").on('click',async()=>{
             clearTextFields();
         }catch{
             swal({
-                title: "Oops! Something went wrong",
-                text: "Failed to save the customer",
-                icon: "error",
+                    title: "Oops! Something went wrong",
+                    text: "Failed to save the customer",
+                    icon: "error",
             });
         }
     }else{
