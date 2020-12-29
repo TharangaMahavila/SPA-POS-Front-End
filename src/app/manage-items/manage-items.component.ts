@@ -15,7 +15,7 @@ import swal from 'sweetalert';
 
 $("app-manage-items").replaceWith('<div id="manage-items">' + manageItems + '</div>');
 var html = '<style>' + style + '</style>';
-$("#dashboard").append(html);
+$("#manage-items").append(html);
 
 let dataTable:any =null;
 let editItem = false;

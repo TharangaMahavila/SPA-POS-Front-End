@@ -17,7 +17,7 @@ import { Customer } from '../model/customer';
 
 $("app-manage-customers").replaceWith('<div id="manage-customers">' + manageCustomers + '</div>');
 var html = '<style>' + style + '</style>';
-$("#dashboard").append(html);
+$("#manage-customers").append(html);
 
 let dataTable:any=null;
 let editCustomer:boolean = false;
