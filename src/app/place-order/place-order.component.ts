@@ -1,7 +1,9 @@
 import swal from 'sweetalert';
 import Swal from 'sweetalert2';
 import { Item } from '../model/item';
-import { getItemInfo } from '../service/place-order.service';
+import { Order } from '../model/order';
+import { OrderItem } from '../model/orderItem';
+import { getItemInfo, getNewOrderId, saveOrder } from '../service/place-order.service';
 import placeOrder from './place-order.component.html';
 import style from './place-order.component.scss';
 
@@ -10,7 +12,18 @@ var html = '<style>' + style + '</style>';
 $("#place-order").append(html);
 
 let subTotal:number = 0;
+let orderItems:Array<OrderItem> = [];
 
+export async function setOrderId(){
+    let newId = await getNewOrderId();
+    $("#orderId").text(newId);
+    $("#tblCart tbody tr").remove();
+    $("#CartSubTotal").val("");
+    $("#netTotal").val("");
+    $("#itemCode").val("");
+    $("#itemCode").focus();
+}
+setOrderId();
 $("#itemCode").on('keyup',async(e)=>{
     if(e.key==='Enter' || e.keyCode === 13){
         if($("#itemCode").val()!==""){
@@ -36,11 +49,13 @@ $("#qty").on('keyup',(e)=>{
     }
 });
 $("#btnAddToCart").on('click',()=>{
-    let itemCode = $("#itemCode").val();
+    let itemCode = <string>$("#itemCode").val();
     let itemName = $("#itemName").val();
-    let itemRate = $("#rate").val();
-    let itemQty = $("#qty").val();
+    let itemRate = <number>$("#rate").val();
+    let itemQty = <number>$("#qty").val();
     let itemSubTotal = <number>$("#subTotal").val();
+    let orderId:string = <string>$("#orderId").text();
+    orderItems.push(new OrderItem(orderId,itemCode,itemRate,itemQty))
     $("#tblCart tbody").append(`
     <tr>
     <td>
@@ -68,6 +83,8 @@ $("#btnAddToCart").on('click',()=>{
 </tr>`);
 subTotal = +subTotal + +itemSubTotal;
 $("#CartSubTotal").val(subTotal.toFixed(2));
+let netTotal = +subTotal - +(<number>$("#discount").val());
+$("#netTotal").val(netTotal.toFixed(2));
 $("#itemCode").val("");
 $("#itemName").val("");
 $("#rate").val("");
@@ -79,8 +96,28 @@ $("#discount").on('input',()=>{
     let netTotal = +subTotal - +(<number>$("#discount").val());
     $("#netTotal").val(netTotal.toFixed(2));
 });
-$("#btnSaveBill").on('click',()=>{
-    alert("Need to implement");
+$("#btnSaveBill").on('click',async ()=>{
+    let orderId:string = <string>$("#orderId").text();
+    let subTotal:number = <number>$("#CartSubTotal").val();
+    let discount:number = <number>$("#discount").val();
+    let netTotal:number = <number>$("#netTotal").val();
+    try {
+        await saveOrder(new Order(orderId,subTotal,discount,netTotal,orderItems));
+        swal({
+            title:"Order Saved",
+            text: "Successfully Saved the Order",
+            icon: "success"
+        }).then(()=>{
+            orderItems.length = 0;
+            setOrderId();
+        })
+    } catch (error) {
+        swal({
+            title: "Oops! Something went wrong",
+            text: "Failed to save the Order",
+            icon: "error",
+        })
+    }
 });
 $("#btnClear").on('click',()=>{
     $("#itemCode").val("");
