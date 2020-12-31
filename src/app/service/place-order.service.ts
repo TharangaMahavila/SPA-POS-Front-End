@@ -5,6 +5,7 @@ import { Order } from "../model/order";
 
 let item:Array<Item> = [];
 let orders:Array<Order> = [];
+let loaded = false;
 
 export function getItemInfo(itemCode:string):Promise<Array<Item>>{
     return new Promise((resolve,reject)=>{
@@ -57,3 +58,21 @@ export function getNewOrderId():Promise<string>{
         });
     });
 }
+export function getAllOrders():Promise<Array<Order>>{
+    return new Promise((resolve,reject)=>{
+        if(!loaded){
+            $.ajax({
+                method:"GET",
+                url: "http://localhost:8080/app/orders"
+            }).then((data)=>{
+                orders = data;
+                loaded = true;
+                resolve(orders);
+            }).fail(()=>{
+                reject();
+            })
+        }else{
+            resolve(orders);
+        }
+    })
+};

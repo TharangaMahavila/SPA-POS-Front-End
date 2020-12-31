@@ -8,3 +8,4 @@ import './dashboard/dashboard.component';
 import './manage-customers/manage-customers.component';
 import './manage-items/manage-items.component'
 import './place-order/place-order.component'
+import './search-order/search-order.component'

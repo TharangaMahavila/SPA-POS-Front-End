@@ -4,6 +4,7 @@ import { Item } from '../model/item';
 import { Order } from '../model/order';
 import { OrderItem } from '../model/orderItem';
 import { getItemInfo, getNewOrderId, saveOrder } from '../service/place-order.service';
+import { loadAllOrders } from '../service/search-order.service';
 import placeOrder from './place-order.component.html';
 import style from './place-order.component.scss';
 
@@ -110,6 +111,7 @@ $("#btnSaveBill").on('click',async ()=>{
         }).then(()=>{
             orderItems.length = 0;
             setOrderId();
+            loadAllOrders();
         })
     } catch (error) {
         swal({

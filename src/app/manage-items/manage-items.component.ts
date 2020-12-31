@@ -72,6 +72,16 @@ $("#btnItemSave").on('click',async()=>{
         }
     }else{
         try{
+            WEB POS
+             Dashboard
+             Manage Customers
+             Manage Items
+             Place Orders
+             Search Orders
+            Search Order
+            Home
+            Search Order
+            
             await updateItem(new Item(id,name,qty,price));
             swal({
                 title:"Item Updated!",
